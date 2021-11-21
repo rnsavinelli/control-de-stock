@@ -63,5 +63,5 @@ Por defecto, para los errores `505` y `404` se devuelve una lista vacía en este
 - `200 OK` Si el stock fue actualizado.
 
 ```json
-[]
+{}
 ```
