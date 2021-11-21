@@ -13,7 +13,7 @@ Todas las respuesta tienen la forma:
 
 Las definiciones subsecuentes sólo detallaran el valor esperado del campo `data`.
 
-Por defecto, para los errores `505` y `404` se devuelve una lista vacía en este campo.
+Por defecto, para los errores `505` y `404` se devuelve `{}`.
 
 ## Listar todos los productos dado un depósito y una ubicación
 
