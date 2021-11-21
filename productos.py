@@ -36,7 +36,7 @@ class Producto(Resource):
     def get(self, identifier):
 
         try:
-            data = self.broker.get_producto_por_id(identifier)
+            data = self.broker.get_producto(identifier)
 
             if data == []:
                 return {"mensaje": "Producto no encontrado", "data": {}}, 404

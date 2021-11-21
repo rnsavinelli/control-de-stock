@@ -23,10 +23,26 @@ class Broker:
         else:
             return []
 
-    def get_producto_por_id(self, identifier):
+    def get_producto(self, identifier):
         try:
             data, description = self.database.execute(
                 f"SELECT * FROM PRODUCTO WHERE ID={int(identifier)}"
+            )
+            return self.bundle(data, description)
+
+        except Exception as e:
+            traceback.print_exc()
+            log("ERROR: " + str(e))
+            return []
+
+    def get_producto_segun_deposito(self, identifier, deposito):
+        try:
+            data, description = self.database.execute(
+                f'SELECT * FROM PRODUCTO_POR_DEPOSITO \
+                WHERE \
+                ID_PRODUCTO={int(identifier)} AND \
+                ID_DEPOSITO="{str(deposito)}" \
+                '
             )
             return self.bundle(data, description)
 
@@ -55,7 +71,7 @@ class Broker:
         except Exception as e:
             traceback.print_exc()
             log("ERROR: " + str(e))
-            return {}
+            return []
 
     def retirar_cantidad_de_producto(self, producto, deposito, ubicacion, cantidad):
         try:
