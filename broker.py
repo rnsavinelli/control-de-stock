@@ -1,9 +1,14 @@
 from sqlite import SQLite
 import traceback
 from log import log
+from ubicacion import Ubicacion
+
+database_file = "sqlite/marketplace.sqlite"
+
 
 class Broker:
-    database = SQLite("sqlite/marketplace.sqlite")
+    database = SQLite(database_file)
+    locator = Ubicacion()
 
     def bundle(self, data, description):
         payload = list()
@@ -14,23 +19,26 @@ class Broker:
                 payload.append(dict(zip(list(keys), list(values))))
 
             return payload
-            
+
         else:
             return []
 
     def get_producto_por_id(self, identifier):
         try:
-            data, description = self.database.execute(f'SELECT * FROM PRODUCTO WHERE ID={int(identifier)}')
+            data, description = self.database.execute(
+                f"SELECT * FROM PRODUCTO WHERE ID={int(identifier)}")
             return self.bundle(data, description)
 
         except Exception as e:
             traceback.print_exc()
-            log("ERROR: " + str(e))   
-            return {}    
+            log("ERROR: " + str(e))
+            return []
 
-    def get_productos(self, deposito, area, pasillo, fila, cara):
+    def get_productos(self, deposito, ubicacion):
         try:
-            data, description = self.database.execute( \
+            area, pasillo, fila, cara = self.locator.parse(ubicacion)
+
+            data, description = self.database.execute(
                 f'SELECT * FROM PRODUCTO_POR_DEPOSITO \
                 WHERE \
                 ID_DEPOSITO="{str(deposito)}" AND \
@@ -44,13 +52,15 @@ class Broker:
 
         except Exception as e:
             traceback.print_exc()
-            log("ERROR: " + str(e))   
-            return {}  
+            log("ERROR: " + str(e))
+            return {}
 
-    def retirar_cantidad_de_producto(self, producto, deposito, area, pasillo, fila, cara, cantidad): 
+    def retirar_cantidad_de_producto(self, producto, deposito, ubicacion,
+                                     cantidad):
         try:
-            self.database.execute( \
-                f'UPDATE PRODUCTO_POR_DEPOSITO \
+            area, pasillo, fila, cara = self.locator.parse(ubicacion)
+
+            self.database.execute(f'UPDATE PRODUCTO_POR_DEPOSITO \
                 SET CANTIDAD=CANTIDAD - {int(cantidad)} \
                 WHERE \
                 ID_PRODUCTO={int(producto)} AND \
@@ -66,12 +76,13 @@ class Broker:
             traceback.print_exc()
             log("ERROR: " + str(e))
 
-        return -1        
-        
-    def get_cantidad_de_producto(self, producto, deposito, area, pasillo, fila, cara):  
+        return -1
+
+    def get_cantidad_de_producto(self, producto, deposito, ubicacion):
         try:
-            data, _ = self.database.execute( \
-            f'SELECT CANTIDAD \
+            area, pasillo, fila, cara = self.locator.parse(ubicacion)
+
+            data, _ = self.database.execute(f'SELECT CANTIDAD \
                 FROM PRODUCTO_POR_DEPOSITO \
                 WHERE \
                 ID_PRODUCTO={int(producto)} AND \

@@ -3,6 +3,7 @@ import traceback
 from sqlite3 import Error
 from log import log
 
+
 class SQLite:
     def __init__(self, database_file):
         self.database_file = str(database_file)
@@ -33,8 +34,8 @@ class SQLite:
         data, description = [], []
 
         try:
-            data, description = self.execute(f'SELECT * FROM {table}')
-            
+            data, description = self.execute(f"SELECT * FROM {table}")
+
             columns = list(map(lambda x: x[0], description))
 
         except (Exception, Error) as e:
@@ -46,9 +47,11 @@ class SQLite:
 
     def write_table(self, table, args):
         try:
-            print(self.execute(f'INSERT INTO {table} ({str(args.keys())}) VALUES ({args.values()})'))
+            print(
+                self.execute(
+                    f"INSERT INTO {table} ({str(args.keys())}) VALUES ({args.values()})"
+                ))
 
         except (Exception, Error) as e:
             traceback.print_exc()
             log("ERROR: " + str(e))
-

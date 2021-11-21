@@ -1,6 +1,7 @@
 import traceback
 from log import log
 
+
 class Ubicacion:
     def parse(self, ubicacion):
         try:
