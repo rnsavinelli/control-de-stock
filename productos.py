@@ -17,10 +17,7 @@ class Productos(Resource):
             data = self.broker.get_productos(deposito, ubicacion)
 
             if data == []:
-                return {
-                    "mensaje": "No se encontraron productos",
-                    "data": {}
-                }, 404
+                return {"mensaje": "No se encontraron productos", "data": {}}, 404
 
             return {"mensaje": "Productos encontrados", "data": data}, 200
 

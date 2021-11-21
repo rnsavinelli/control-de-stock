@@ -26,7 +26,8 @@ class Broker:
     def get_producto_por_id(self, identifier):
         try:
             data, description = self.database.execute(
-                f"SELECT * FROM PRODUCTO WHERE ID={int(identifier)}")
+                f"SELECT * FROM PRODUCTO WHERE ID={int(identifier)}"
+            )
             return self.bundle(data, description)
 
         except Exception as e:
@@ -46,7 +47,8 @@ class Broker:
                 PASILLO={int(pasillo)} AND \
                 FILA={int(fila)} AND \
                 CARA="{str(cara)}" \
-            ')
+            '
+            )
 
             return self.bundle(data, description)
 
@@ -55,12 +57,12 @@ class Broker:
             log("ERROR: " + str(e))
             return {}
 
-    def retirar_cantidad_de_producto(self, producto, deposito, ubicacion,
-                                     cantidad):
+    def retirar_cantidad_de_producto(self, producto, deposito, ubicacion, cantidad):
         try:
             area, pasillo, fila, cara = self.locator.parse(ubicacion)
 
-            self.database.execute(f'UPDATE PRODUCTO_POR_DEPOSITO \
+            self.database.execute(
+                f'UPDATE PRODUCTO_POR_DEPOSITO \
                 SET CANTIDAD=CANTIDAD - {int(cantidad)} \
                 WHERE \
                 ID_PRODUCTO={int(producto)} AND \
@@ -69,7 +71,8 @@ class Broker:
                 PASILLO={int(pasillo)} AND \
                 FILA={int(fila)} AND \
                 CARA="{str(cara)}" \
-            ')
+            '
+            )
             return 0
 
         except Exception as e:
@@ -82,7 +85,8 @@ class Broker:
         try:
             area, pasillo, fila, cara = self.locator.parse(ubicacion)
 
-            data, _ = self.database.execute(f'SELECT CANTIDAD \
+            data, _ = self.database.execute(
+                f'SELECT CANTIDAD \
                 FROM PRODUCTO_POR_DEPOSITO \
                 WHERE \
                 ID_PRODUCTO={int(producto)} AND \
@@ -91,7 +95,8 @@ class Broker:
                 PASILLO={int(pasillo)} AND \
                 FILA={int(fila)} AND \
                 CARA="{str(cara)}" \
-            ')
+            '
+            )
 
             if data != []:
                 cantidad_disponible = data[0][0]

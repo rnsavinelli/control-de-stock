@@ -15,34 +15,29 @@ class Retirar(Resource):
         try:
             if cantidad > 0:
                 cantidad_disponible = self.broker.get_cantidad_de_producto(
-                    producto, deposito, ubicacion)
+                    producto, deposito, ubicacion
+                )
 
-                if (cantidad_disponible >
-                        0) and (cantidad_disponible - cantidad) >= 0:
+                if (cantidad_disponible > 0) and (cantidad_disponible - cantidad) >= 0:
 
-                    if (self.broker.retirar_cantidad_de_producto(
-                            producto, deposito, ubicacion, cantidad) == 0):
-                        return {
-                            "mensaje": "El stock fue actualizado",
-                            "data": {}
-                        }, 200
+                    if (
+                        self.broker.retirar_cantidad_de_producto(
+                            producto, deposito, ubicacion, cantidad
+                        )
+                        == 0
+                    ):
+                        return {"mensaje": "El stock fue actualizado", "data": {}}, 200
 
                     else:
-                        return {
-                            "mensaje": "Producto no encontrado",
-                            "data": {}
-                        }, 404
+                        return {"mensaje": "Producto no encontrado", "data": {}}, 404
 
                 else:
-                    return {
-                        "mensaje": "No hay stock suficiente",
-                        "data": {}
-                    }, 406
+                    return {"mensaje": "No hay stock suficiente", "data": {}}, 406
 
             else:
                 return {
                     "mensaje": "No se admiten cantidades negativas",
-                    "data": {}
+                    "data": {},
                 }, 406
 
         except Exception as e:

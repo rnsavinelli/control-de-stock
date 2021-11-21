@@ -50,7 +50,8 @@ class SQLite:
             print(
                 self.execute(
                     f"INSERT INTO {table} ({str(args.keys())}) VALUES ({args.values()})"
-                ))
+                )
+            )
 
         except (Exception, Error) as e:
             traceback.print_exc()
