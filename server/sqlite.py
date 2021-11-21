@@ -1,7 +1,7 @@
 import sqlite3
 import traceback
 from sqlite3 import Error
-from log import log
+from server.log import log
 
 
 class SQLite:

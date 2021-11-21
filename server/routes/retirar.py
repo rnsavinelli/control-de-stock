@@ -1,15 +1,13 @@
 from flask_restful import Resource
-from broker import Broker
+from server.core import broker
 
 
 # 2 - Exponer un endpoint para poder retirar productos de una ubicación.
 # Se nos indicará el depósito, producto, cantidad y ubicación de donde sacarla.
 class Retirar(Resource):
-    broker = Broker()
-
     def get(self, deposito, ubicacion, producto, cantidad):
         if cantidad > 0:
-            cantidad_disponible = self.broker.get_cantidad_de_producto(
+            cantidad_disponible = broker.get_cantidad_de_producto(
                 producto, deposito, ubicacion
             )
 
@@ -17,7 +15,7 @@ class Retirar(Resource):
                 return {"mensaje": "Producto no encontrado", "data": {}}, 404
 
             if (cantidad_disponible > 0) and (cantidad_disponible - cantidad) >= 0:
-                code, message, data = self.broker.retirar_cantidad_de_producto(
+                code, message, data = broker.retirar_cantidad_de_producto(
                     producto, deposito, ubicacion, cantidad
                 )
 

@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from broker import Broker
+from server.core import broker
 
 
 # 1 - Exponer un endpoint REST para agregar productos en una ubicación.
@@ -8,8 +8,6 @@ from broker import Broker
 #   c. Que el producto/item sea almacenado en nuestros depósitos.
 #   d. No se pueden colocar más de 3 productos distintos en una ubicación.
 class Agregar(Resource):
-    broker = Broker()
-
     def get(self):
         pass
 
@@ -25,7 +23,7 @@ class Agregar(Resource):
         # Parse the arguments into an object
         args = parser.parse_args()
 
-        code, message, data = self.broker.add_producto(
+        code, message, data = broker.add_producto(
             args["deposito"],
             args["ubicacion"],
             args["producto"],

@@ -1,14 +1,14 @@
-from sqlite import SQLite
+import os
+from server.sqlite import SQLite
 import traceback
-from log import log
-from ubicacion import Ubicacion
-
-database_file = "sqlite/marketplace.sqlite"
+from server.log import log
+from server.ubicacion import Ubicacion
 
 
 class Broker:
-    database = SQLite(database_file)
-    locator = Ubicacion()
+    def __init__(self, database_file):
+        self.database = SQLite(database_file)
+        self.locator = Ubicacion()
 
     def bundle(self, data, description):
         payload = list()

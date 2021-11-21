@@ -1,0 +1,3 @@
+sqlite:
+    # relative to the current directory
+    database: database/marketplace.sqlite
