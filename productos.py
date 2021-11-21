@@ -16,24 +16,23 @@ class Productos(Resource):
     def get(self, deposito, ubicacion):
         try:
             area, pasillo, fila, cara = self.locator.parse(ubicacion)
-
             data = self.broker.get_productos(deposito, area, pasillo, fila, cara)
 
             if data == []:
                 return {
-                    'message': 'Productos no encontrados', 
+                    'mensaje': 'Productos no encontrados', 
                     'data': []
                 }, 404
 
             return {
-                'message': 'Productos encontrados', 
+                'mensaje': 'Productos encontrados', 
                 'data': data
             }, 200 
 
         except Exception as e:
             traceback.print_exc()
             log("ERROR: " + str(e))
-            return {'message': 'Error interno del servidor', 'data': {}}, 500                
+            return {'mensaje': 'Error interno del servidor', 'data': {}}, 500                
 
     def post(self):
         pass    
@@ -48,19 +47,19 @@ class Producto(Resource):
 
             if data == {}:
                 return {
-                    'message': 'Producto no encontrado', 
+                    'mensaje': 'Producto no encontrado', 
                     'data': []
                 }, 404
 
             return {
-                'message': 'Producto encontrado', 
+                'mensaje': 'Producto encontrado', 
                 'data': data
             }, 200 
 
         except Exception as e:
             traceback.print_exc()
             log("ERROR: " + str(e))
-            return {'message': 'Error interno del servidor', 'data': {}}, 500           
+            return {'mensaje': 'Error interno del servidor', 'data': {}}, 500           
 
     def post(self):
         pass

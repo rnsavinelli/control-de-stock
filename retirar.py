@@ -20,32 +20,32 @@ class Retirar(Resource):
 
                     if self.broker.retirar_cantidad_de_producto(producto, deposito, area, pasillo, fila, cara, cantidad) == 0:
                         return {
-                            'message': 'El stock fue actualizado', 
+                            'mensaje': 'El stock fue actualizado', 
                             'data': []
                         }, 200
 
                     else:
                         return {
-                            'message': 'Producto no encontrado', 
+                            'mensaje': 'Producto no encontrado', 
                             'data': []
                         }, 404           
 
                 else:
                     return {
-                        'message': 'No hay stock suficiente', 
+                        'mensaje': 'No hay stock suficiente', 
                         'data': []
                     }, 406
 
             else:
                 return {
-                    'message': 'No se admiten cantidades negativas', 
+                    'mensaje': 'No se admiten cantidades negativas', 
                     'data': []
                 }, 406                
 
         except Exception as e:
             traceback.print_exc()
             log("ERROR: " + str(e))
-            return {'message': 'Error interno del servidor', 'data': {}}, 500           
+            return {'mensaje': 'Error interno del servidor', 'data': {}}, 500           
 
     def post(self):
         pass   

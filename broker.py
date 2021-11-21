@@ -14,6 +14,7 @@ class Broker:
                 payload.append(dict(zip(list(keys), list(values))))
 
             return payload
+            
         else:
             return []
 
