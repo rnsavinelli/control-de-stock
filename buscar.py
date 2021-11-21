@@ -3,6 +3,7 @@ import traceback
 from log import log
 from broker import Broker
 
+
 # 4 - Exponer un endpoint de búsqueda. Se nos indica el depósito y producto, y este nos
 # devuelva las posibles ubicaciones y cantidad en las mismas.
 class Buscar(Resource):
