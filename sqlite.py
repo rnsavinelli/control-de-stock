@@ -17,18 +17,23 @@ class SQLite:
             cur.execute(query)
             data = cur.fetchall()
             description = cur.description
+            rowcount = cur.rowcount
             con.commit()
 
         except (Exception, Error) as e:
+            if con:
+                con.close()
+
             traceback.print_exc()
             data, description = [], []
             log("ERROR: " + str(e))
+            raise Exception("Se produjo un error al ejecutar la query")
 
         finally:
             if con:
                 con.close()
 
-        return data, description
+        return data, description, rowcount
 
     def read_table(self, table):
         data, description = [], []
@@ -47,12 +52,11 @@ class SQLite:
 
     def write_table(self, table, args):
         try:
-            print(
-                self.execute(
-                    f"INSERT INTO {table} ({str(args.keys())}) VALUES ({args.values()})"
-                )
-            )
+            keys = str(list(args.keys())).replace("[", "").replace("]", "")
+            values = str(list(args.values())).replace("[", "").replace("]", "")
+            self.execute(f"INSERT INTO {table} ({keys}) VALUES ({values})")
 
         except (Exception, Error) as e:
             traceback.print_exc()
             log("ERROR: " + str(e))
+            raise Exception("Se produjo un error al intertar escribir la base de datos")

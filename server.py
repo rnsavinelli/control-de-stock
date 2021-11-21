@@ -4,6 +4,7 @@ from flask_cors import CORS
 import markdown
 
 from buscar import Buscar
+from agregar import Agregar
 from retirar import Retirar
 from productos import Producto, Productos
 
@@ -21,6 +22,17 @@ def index():
         return markdown.markdown(content)
 
 
+# 1 - Exponer un endpoint REST para agregar productos en una ubicación.
+#   a. Se nos indicará el Depósito, producto, cantidad y ubicación donde quiere colocar.
+#   b. Validar que la dirección tenga el patrón correcto.
+#   c. Que el producto/item sea almacenado en nuestros depósitos.
+#   d. No se pueden colocar más de 3 productos distintos en una ubicación.
+api.add_resource(
+    Agregar,
+    "/agregar",
+)
+
+#   e. La suma de las cantidades de los productos que hubiera en una ubicación no puede ser mayor a 100 unidades.
 # 2 - Exponer un endpoint para poder retirar productos de una ubicación.
 # Se nos indicará el depósito, producto, cantidad y ubicación de donde sacarla.
 # curl localhost:5000/retirar/AR01/AL-04-02-DE/2/7
