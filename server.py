@@ -27,6 +27,7 @@ def index():
 #   b. Validar que la dirección tenga el patrón correcto.
 #   c. Que el producto/item sea almacenado en nuestros depósitos.
 #   d. No se pueden colocar más de 3 productos distintos en una ubicación.
+# e.g. curl -X POST -F 'producto=4' -F 'deposito=AR01' -F 'ubicacion=AL-04-02-DE' -F 'cantidad=0' localhost:5000/agregar
 api.add_resource(
     Agregar,
     "/agregar",
