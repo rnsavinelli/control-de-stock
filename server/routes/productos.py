@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from server.core import broker
+from server.flask import broker
 
 
 # 3 - Exponer un endpoint de lectura. Se nos indica un depósito y una ubicación, y este

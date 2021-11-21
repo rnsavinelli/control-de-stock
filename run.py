@@ -1,3 +1,8 @@
 from server import app
+from server.configuration import configuration
 
-app.run(host='0.0.0.0', port=5000, debug=True)
+app.run(
+    host=configuration["server"]["host"],
+    port=configuration["server"]["port"],
+    debug=True,
+)

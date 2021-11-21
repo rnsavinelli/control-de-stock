@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from server.core import broker
+from server.flask import broker
 
 
 # 2 - Exponer un endpoint para poder retirar productos de una ubicación.

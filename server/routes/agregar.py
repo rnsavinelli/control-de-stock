@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from server.core import broker
+from server.flask import broker
 
 
 # 1 - Exponer un endpoint REST para agregar productos en una ubicación.

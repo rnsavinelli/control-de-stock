@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from server.core import broker
+from server.flask import broker
 
 
 # 4 - Exponer un endpoint de búsqueda. Se nos indica el depósito y producto, y este nos
