@@ -1,6 +1,4 @@
 from flask_restful import Resource
-import traceback
-from log import log
 from broker import Broker
 
 
