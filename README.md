@@ -50,7 +50,7 @@ Por defecto, para los errores `505` y `404` se devuelve `{}`.
 ]
 ```
 
-## Retirar cierta cantidad de un producto dado un producto, un depósito, una cantidad y una ubicación
+## Retirar cierta cantidad de un producto dado un id de producto, un depósito, una cantidad y una ubicación
 
 `GET /retirar/<string:deposito>/<string:ubicacion>/<int:producto>/<int:cantidad>`
 
@@ -65,3 +65,12 @@ Por defecto, para los errores `505` y `404` se devuelve `{}`.
 ```json
 {}
 ```
+
+## Encontrar ubicaciones y cantidades de un producto dado un deposito y un id de producto
+
+`GET /buscar/<string:deposito>/<int:identifier>`
+
+- `505 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
+- `404 Not Found` Si el producto no fue encontrado en el deposito.
+- `200 OK` Si el producto fue encontrado en el depósito.
+
