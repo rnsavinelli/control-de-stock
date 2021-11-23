@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_restful import Resource
-import traceback
 
-from server.logger import log
 from server.endpoint import Endpoint
 
 # 4 - Exponer un endpoint de búsqueda. Se nos indica el depósito y producto, y este nos
@@ -35,6 +33,4 @@ class Buscar(Resource, Endpoint):
                 return 404, "No se encontraron productos", {}
 
         except Exception as e:
-            traceback.print_exc()
-            log("ERROR: " + str(e))
             return 500, str(e), {}

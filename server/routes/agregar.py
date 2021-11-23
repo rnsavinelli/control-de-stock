@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_restful import Resource, reqparse
-import traceback
 
-from server.logger import log
 from server.endpoint import Endpoint
 
 # 1 - Exponer un endpoint REST para agregar productos en una ubicación.
@@ -14,7 +12,7 @@ from server.endpoint import Endpoint
 #   d. No se pueden colocar más de 3 productos distintos en una ubicación.
 class Agregar(Resource, Endpoint):
     def __init__(self, **kwargs):
-        Endpoint.__init__(database_file=kwargs["database_file"])
+        Endpoint.__init__(self, database_file=kwargs["database_file"])
 
     def post(self):
 
@@ -43,8 +41,6 @@ class Agregar(Resource, Endpoint):
             area, pasillo, fila, cara = self.locator.parse(ubicacion)
 
         except Exception as e:
-            traceback.print_exc()
-            log("ERROR: " + str(e))
             return 406, str(e), {}
         # EO Validar que la dirección tenga el patrón correcto.
 
@@ -65,8 +61,6 @@ class Agregar(Resource, Endpoint):
                 return 406, "El producto no se encuentra en nuestros depósitos", {}
 
         except Exception as e:
-            traceback.print_exc()
-            log("ERROR: " + str(e))
             return 500, str(e), {}
         # EO Validar que el producto/item sea almacenado en nuestros depósitos.
 
@@ -83,8 +77,6 @@ class Agregar(Resource, Endpoint):
             n_entries = len(entries)
 
         except Exception as e:
-            traceback.print_exc()
-            log("ERROR: " + str(e))
             return 500, str(e), {}
 
         if not (
@@ -128,6 +120,4 @@ class Agregar(Resource, Endpoint):
             return 200, "La base de datos fue actualizada", {}
 
         except Exception as e:
-            traceback.print_exc()
-            log("ERROR: " + str(e))
             return 500, str(e), {}

@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-import traceback
 from sqlite3 import Error
-from server.logger import log
 
 
 class SQLite:
@@ -27,10 +25,8 @@ class SQLite:
             if con:
                 con.close()
 
-            traceback.print_exc()
             data, description = [], []
-            log("ERROR: " + str(e))
-            raise Exception("Se produjo un error al ejecutar la query")
+            raise Exception(f"Se produjo un error al ejecutar la query: {str(e)}")
 
         finally:
             if con:
@@ -39,30 +35,17 @@ class SQLite:
         return data, description, rowcount
 
     def read_table(self, table):
-        data, description = [], []
+        data, description = self.execute(f"SELECT * FROM {table}")
 
-        try:
-            data, description = self.execute(f"SELECT * FROM {table}")
-
-            columns = list(map(lambda x: x[0], description))
-
-        except (Exception, Error) as e:
-            traceback.print_exc()
-            data, description = [], []
-            log("ERROR: " + str(e))
+        columns = list(map(lambda x: x[0], description))
 
         return data, columns
 
     def write_table(self, table, args):
-        try:
-            keys = str(list(args.keys())).replace("[", "").replace("]", "")
-            values = str(list(args.values())).replace("[", "").replace("]", "")
-            self.execute(f"INSERT INTO {table} ({keys}) VALUES ({values})")
+        keys = str(list(args.keys())).replace("[", "").replace("]", "")
+        values = str(list(args.values())).replace("[", "").replace("]", "")
 
-        except (Exception, Error) as e:
-            traceback.print_exc()
-            log("ERROR: " + str(e))
-            raise Exception("Se produjo un error al intertar escribir la base de datos")
+        self.execute(f"INSERT INTO {table} ({keys}) VALUES ({values})")
 
     def select(self, columns, table, condition):
         return self.execute(f"SELECT {columns} FROM {table} WHERE {condition}")

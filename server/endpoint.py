@@ -22,6 +22,9 @@ class Endpoint:
     def put(self):
         pass
 
+    def _parse_ubicacion(self, ubicacion):
+        return self.locator.parse(ubicacion)
+
     def _bundle(self, data, description):
         payload = list()
 
