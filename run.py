@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from server import app
-from server.configuration import configuration
 
 app.run(
-    host=configuration["server"]["host"],
-    port=configuration["server"]["port"],
+    host="0.0.0.0",
+    port=80,
     debug=True,
 )

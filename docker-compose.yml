@@ -1,0 +1,9 @@
+version: '2.1.1'
+
+services:
+  api:
+    build: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 5000:80
