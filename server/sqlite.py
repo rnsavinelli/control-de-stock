@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import sqlite3
 import traceback
 from sqlite3 import Error

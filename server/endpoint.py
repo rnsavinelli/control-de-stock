@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from server.ubicacion import Ubicacion
 from server.sqlite import SQLite
 from server.configuration import configuration

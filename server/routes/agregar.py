@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from flask_restful import Resource, reqparse
 import traceback
 

@@ -1,3 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+
 class Ubicacion:
     def _area_validator(self, area):
         if len(area) != 2:
