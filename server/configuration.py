@@ -1,8 +1,11 @@
 import os
 import yaml
 
-real_path = os.path.realpath(__file__)
-dir_path = os.path.dirname(real_path)
+pwd = os.path.dirname(os.path.realpath(__file__))
 
-with open(dir_path + "/../configuration.yml", "r") as ymlfile:
+with open("configuration.yml", "r") as ymlfile:
     configuration = yaml.safe_load(ymlfile)
+
+configuration["sqlite"]["file"] = pwd + "/../" + configuration["sqlite"]["file"]
+
+del pwd, ymlfile

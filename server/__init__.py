@@ -1,11 +1,15 @@
 import os
 import markdown
+from flask import Flask
+from flask_restful import Api
 
-from server.flask import app, api
 from server.routes.buscar import Buscar
 from server.routes.agregar import Agregar
 from server.routes.retirar import Retirar
 from server.routes.leer import Leer
+
+app = Flask(__name__)
+api = Api(app)
 
 
 @app.route("/")
