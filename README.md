@@ -35,7 +35,8 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 - `404 Not Found` Si el producto no fue encontrado.
 - `200 OK` Si el stock fue actualizado.
 
-200 e.g.
+**Ejemplo 200**
+
 `curl -X POST -F 'producto=2' -F 'deposito=AR01' -F 'ubicacion=AL-04-02-DE' -F 'cantidad=1' localhost:5000/agregar`
 
 ```json
@@ -59,7 +60,8 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 - `404 Not Found` Si el producto no fue encontrado.
 - `200 OK` Si el stock fue actualizado.
 
-200 e.g.
+**Ejemplo 200**
+
 `curl localhost:5000/retirar/AR01/AL-04-02-DE/4/1`
 
 ```json
@@ -83,7 +85,8 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 - `404 Not Found` Si ningún producto fue encontrado.
 - `200 OK` Productos encontrados.
 
-200 e.g.
+**Ejemplo 200**
+
 `curl localhost:5000/leer/AR01/AL-04-02-DE`
 
 ```json
@@ -125,11 +128,15 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 
 `GET /buscar/<string:deposito>/<int:identifier>`
 
+**Respuesta**
+
 - `505 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
+- `406 Not Acceptable` Si el depósito no tiene el patrón correcto.
 - `404 Not Found` Si el producto no fue encontrado en el deposito.
 - `200 OK` Si el producto fue encontrado en el depósito.
 
-200 e.g.
+**Ejemplo 200**
+
 `curl localhost:5000/buscar/AR01/1`
 
 ```json
