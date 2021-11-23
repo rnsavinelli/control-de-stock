@@ -12,7 +12,7 @@ class Buscar(Resource, Endpoint):
         Endpoint.__init__(self, database_file=kwargs["database_file"])
 
     def get(self, identifier, deposito):
-        code, message, data = self._get_producto_segun_deposito(identifier, deposito)
+        message, data, code = self._get_producto_segun_deposito(identifier, deposito)
 
         return {"mensaje": message, "data": data}, code
 
@@ -27,10 +27,10 @@ class Buscar(Resource, Endpoint):
             result = self._bundle(data, description)
 
             if result != []:
-                return 200, "Productos encontrados", result
+                return "Productos encontrados", result, 200
 
             else:
-                return 404, "No se encontraron productos", {}
+                return "No se encontraron productos", {}, 404
 
         except Exception as e:
-            return 500, str(e), {}
+            return str(e), {}, 500
