@@ -13,6 +13,38 @@ Todas las respuesta tienen la forma:
 
 Por defecto, para los errores `505` y `404`, el campo `data`, devuelve `{}`.
 
+## 1- Agregar cierta cantidad de un producto dado un id de producto, un depósito, una cantidad y una ubicación
+
+`POST /agregar`
+
+**Parámetros**
+
+- `"producto":int` identificador numérico del producto.
+- `"deposito":string` identificador del depósito constando de 4 caracteres, los 2 primeros siendo el código ISO de país y los otros son una secuencia numérica, e.g. AR01.
+- `"ubicacion":string` identificador de la ubicación según {Area}-{Pasillo}-{Fila}-{Cara}
+con 2 dígitos para cada parte, e.g. AL-04-02-DE.
+- `"cantidad":int` cantidad de producto a agregar.
+
+**Respuesta**
+
+- `505 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
+- `406 Not Acceptable` Si la ubicación no tiene el patrón correcto.
+- `406 Not Acceptable` Si el depósito no tiene el patrón correcto.
+- `406 Not Acceptable` Si se intentó agregar una cantidad negativa del producto.
+- `406 Not Acceptable` Si no hay stock suficiente del producto.
+- `404 Not Found` Si el producto no fue encontrado.
+- `200 OK` Si el stock fue actualizado.
+
+200 e.g.
+`curl -X POST -F 'producto=2' -F 'deposito=AR01' -F 'ubicacion=AL-04-02-DE' -F 'cantidad=1' localhost:5000/agregar`
+
+```json
+{
+    "mensaje": "La base de datos fue actualizada",
+    "data": {}
+}
+```
+
 ## 2- Retirar cierta cantidad de un producto dado un id de producto, un depósito, una cantidad y una ubicación
 
 `GET /retirar/<string:deposito>/<string:ubicacion>/<int:producto>/<int:cantidad>`
@@ -20,6 +52,8 @@ Por defecto, para los errores `505` y `404`, el campo `data`, devuelve `{}`.
 **Respuesta**
 
 - `505 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
+- `406 Not Acceptable` Si la ubicación no tiene el patrón correcto.
+- `406 Not Acceptable` Si el depósito no tiene el patrón correcto.
 - `406 Not Acceptable` Si se intentó descontar una cantidad negativa del producto.
 - `406 Not Acceptable` Si no hay stock suficiente del producto.
 - `404 Not Found` Si el producto no fue encontrado.
@@ -44,6 +78,8 @@ Por defecto, para los errores `505` y `404`, el campo `data`, devuelve `{}`.
 **Respuesta**
 
 - `505 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
+- `406 Not Acceptable` Si la ubicación no tiene el patrón correcto.
+- `406 Not Acceptable` Si el depósito no tiene el patrón correcto.
 - `404 Not Found` Si ningún producto fue encontrado.
 - `200 OK` Productos encontrados.
 
