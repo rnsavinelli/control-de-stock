@@ -3,12 +3,11 @@
 
 from server.ubicacion import Ubicacion
 from server.sqlite import SQLite
-from server.configuration import configuration
 
 
 class Endpoint:
-    def __init__(self):
-        self.database = SQLite(configuration["sqlite"]["file"])
+    def __init__(self, database_file):
+        self.database = SQLite(database_file=database_file)
         self.locator = Ubicacion()
 
     def get(self):

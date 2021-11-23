@@ -10,6 +10,9 @@ from server.endpoint import Endpoint
 # 2 - Exponer un endpoint para poder retirar productos de una ubicación.
 # Se nos indicará el depósito, producto, cantidad y ubicación de donde sacarla.
 class Retirar(Resource, Endpoint):
+    def __init__(self, **kwargs):
+        Endpoint.__init__(database_file=kwargs["database_file"])
+
     def get(self, deposito, ubicacion, producto, cantidad):
         if cantidad < 0:
             return {

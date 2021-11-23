@@ -1,14 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
 import yaml
 
-pwd = os.path.dirname(os.path.realpath(__file__))
 
-with open("configuration.yml", "r") as ymlfile:
-    configuration = yaml.safe_load(ymlfile)
+class Configuration:
+    def __init__(self, _configuration_file):
+        with open(_configuration_file, "r") as ymlfile:
+            self.configuration = yaml.safe_load(ymlfile)
 
-configuration["sqlite"]["file"] = pwd + "/../" + configuration["sqlite"]["file"]
-
-del pwd, ymlfile
+    def database(self):
+        return self.configuration["sqlite"]["file"]

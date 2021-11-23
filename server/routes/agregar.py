@@ -13,6 +13,9 @@ from server.endpoint import Endpoint
 #   c. Que el producto/item sea almacenado en nuestros depósitos.
 #   d. No se pueden colocar más de 3 productos distintos en una ubicación.
 class Agregar(Resource, Endpoint):
+    def __init__(self, **kwargs):
+        Endpoint.__init__(database_file=kwargs["database_file"])
+
     def post(self):
 
         parser = reqparse.RequestParser()

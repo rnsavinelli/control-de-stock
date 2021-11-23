@@ -10,6 +10,9 @@ from server.endpoint import Endpoint
 # 3 - Exponer un endpoint de lectura. Se nos indica un depósito y una ubicación, y este
 # liste los productos y cantidad que hay en el mismo.
 class Leer(Resource, Endpoint):
+    def __init__(self, **kwargs):
+        Endpoint.__init__(database_file=kwargs["database_file"])
+
     def get(self, deposito, ubicacion):
         code, message, data = self._get_productos(deposito, ubicacion)
 
