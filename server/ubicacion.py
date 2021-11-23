@@ -33,7 +33,7 @@ class Ubicacion:
         ubicacion_splitted = str(ubicacion).strip().split("-")
 
         if len(ubicacion_splitted) != 4:
-            raise Exception("La ubicación NO tiene el formato AREA-PASILLO-FILA-CARA")
+            raise Exception("La ubicacion NO tiene el formato AREA-PASILLO-FILA-CARA")
 
         area = ubicacion_splitted[0]
         pasillo = ubicacion_splitted[1]
@@ -46,6 +46,6 @@ class Ubicacion:
             or not self._fila_validator(fila)
             or not self._pasillo_validator(pasillo)
         ):
-            raise Exception("La ubicación NO cumple con el estándar definido")
+            raise Exception("La ubicacion NO cumple con el estandar definido")
 
         return area, pasillo, fila, cara
