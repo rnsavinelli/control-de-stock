@@ -9,6 +9,3 @@ class Buscar(Resource):
         code, message, data = broker.get_producto_segun_deposito(identifier, deposito)
 
         return {"mensaje": message, "data": data}, code
-
-    def post(self):
-        pass

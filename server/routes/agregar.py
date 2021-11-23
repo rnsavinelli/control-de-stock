@@ -1,16 +1,12 @@
 from flask_restful import Resource, reqparse
 from server.flask import broker
 
-
 # 1 - Exponer un endpoint REST para agregar productos en una ubicación.
 #   a. Se nos indicará el Depósito, producto, cantidad y ubicación donde quiere colocar.
 #   b. Validar que la dirección tenga el patrón correcto.
 #   c. Que el producto/item sea almacenado en nuestros depósitos.
 #   d. No se pueden colocar más de 3 productos distintos en una ubicación.
 class Agregar(Resource):
-    def get(self):
-        pass
-
     def post(self):
 
         parser = reqparse.RequestParser()

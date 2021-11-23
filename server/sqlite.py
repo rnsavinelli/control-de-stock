@@ -1,3 +1,4 @@
+from os import cpu_count
 import sqlite3
 import traceback
 from sqlite3 import Error
@@ -60,3 +61,9 @@ class SQLite:
             traceback.print_exc()
             log("ERROR: " + str(e))
             raise Exception("Se produjo un error al intertar escribir la base de datos")
+
+    def select(self, columns, table, condition):
+        return self.execute(f"SELECT {columns} FROM {table} WHERE {condition}")
+
+    def update(self, table, modifications, condition):
+        return self.execute(f"UPDATE {table} SET {modifications} WHERE {condition}")
