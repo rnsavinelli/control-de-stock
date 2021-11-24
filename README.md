@@ -27,7 +27,7 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 
 **Respuesta**
 
-- `505 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
+- `500 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
 - `406 Not Acceptable` Si la ubicación no tiene el patrón correcto.
 - `406 Not Acceptable` Si el depósito no tiene el patrón correcto.
 - `406 Not Acceptable` Si se intentó agregar una cantidad negativa del producto.
@@ -52,7 +52,7 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 
 **Respuesta**
 
-- `505 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
+- `500 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
 - `406 Not Acceptable` Si la ubicación no tiene el patrón correcto.
 - `406 Not Acceptable` Si el depósito no tiene el patrón correcto.
 - `406 Not Acceptable` Si se intentó descontar una cantidad negativa del producto.
@@ -79,7 +79,7 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 
 **Respuesta**
 
-- `505 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
+- `500 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
 - `406 Not Acceptable` Si la ubicación no tiene el patrón correcto.
 - `406 Not Acceptable` Si el depósito no tiene el patrón correcto.
 - `404 Not Found` Si ningún producto fue encontrado.
@@ -130,7 +130,7 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 
 **Respuesta**
 
-- `505 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
+- `500 Internal Server Error` Si se produjo un error durante el proceso de consulta a la base de datos.
 - `406 Not Acceptable` Si el depósito no tiene el patrón correcto.
 - `404 Not Found` Si el producto no fue encontrado en el deposito.
 - `200 OK` Si el producto fue encontrado en el depósito.
