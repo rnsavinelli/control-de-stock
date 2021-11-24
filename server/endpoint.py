@@ -1,31 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from server.ubicacion import Ubicacion
+from server.validator import Validator
 from server.sqlite import SQLite
 
 
-class Endpoint:
+class Endpoint(Validator):
     def __init__(self, database_file):
         self.database = SQLite(database_file=database_file)
-        self.locator = Ubicacion()
 
-    def get(self):
-        pass
-
-    def post(self):
-        pass
-
-    def delete(self):
-        pass
-
-    def put(self):
-        pass
-
-    def _parse_ubicacion(self, ubicacion):
-        return self.locator.parse(ubicacion)
-
-    def _bundle(self, data, description):
+    def bundle(self, data, description):
         payload = list()
 
         if data != []:
@@ -37,3 +21,6 @@ class Endpoint:
 
         else:
             return []
+
+    def build_response(self, message, data, code):
+        return {"mensaje": message, "data": data}, code

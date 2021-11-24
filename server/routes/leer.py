@@ -12,32 +12,34 @@ class Leer(Resource, Endpoint):
         Endpoint.__init__(self, database_file=kwargs["database_file"])
 
     def get(self, deposito, ubicacion):
-        code, message, data = self._get_productos(deposito, ubicacion)
-
-        return {"mensaje": message, "data": data}, code
-
-    def _get_productos(self, deposito, ubicacion):
         try:
-            area, pasillo, fila, cara = self.locator.parse(ubicacion)
+            area, pasillo, fila, cara = self.parse_ubicacion(ubicacion)
+            self.validar_deposito(deposito)
 
         except Exception as e:
-            return 406, str(e), {}
+            return self.build_response(str(e), {}, 406)
 
+        message, data, code = self._get_productos(deposito, area, pasillo, fila, cara)
+
+        return self.build_response(message, data, code)
+
+    def _get_productos(self, deposito, area, pasillo, fila, cara):
         try:
             data, description, _ = self.database.select(
                 "*",
                 "PRODUCTO_POR_DEPOSITO",
-                f'ID_DEPOSITO="{str(deposito)}" AND AREA="{str(area)}" AND PASILLO={int(pasillo)} \
-                    AND FILA={int(fila)} AND CARA="{str(cara)}"',
+                f'ID_DEPOSITO="{str(deposito)}" AND AREA="{str(area)}" \
+                    AND PASILLO={int(pasillo)} AND FILA={int(fila)} \
+                    AND CARA="{str(cara)}"',
             )
 
-            result = self._bundle(data, description)
+            result = self.bundle(data, description)
 
             if result != []:
-                return 200, "Productos encontrados", result
+                return "Productos encontrados", result, 200
 
             else:
-                return 404, "No se encontraron productos", {}
+                return "No se encontraron productos", {}, 404
 
         except Exception as e:
-            return 500, str(e), {}
+            return str(e), {}, 500

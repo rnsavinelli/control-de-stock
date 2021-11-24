@@ -12,9 +12,15 @@ class Buscar(Resource, Endpoint):
         Endpoint.__init__(self, database_file=kwargs["database_file"])
 
     def get(self, identifier, deposito):
+        try:
+            self.validar_deposito(deposito)
+
+        except Exception as e:
+            return self.build_response(str(e), {}, 406)
+
         message, data, code = self._get_producto_segun_deposito(identifier, deposito)
 
-        return {"mensaje": message, "data": data}, code
+        return self.build_response(message, data, code)
 
     def _get_producto_segun_deposito(self, identifier, deposito):
         try:
@@ -24,7 +30,7 @@ class Buscar(Resource, Endpoint):
                 f'ID_PRODUCTO={int(identifier)} AND ID_DEPOSITO="{str(deposito)}"',
             )
 
-            result = self._bundle(data, description)
+            result = self.bundle(data, description)
 
             if result != []:
                 return "Productos encontrados", result, 200

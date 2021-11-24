@@ -13,36 +13,33 @@ class Retirar(Resource, Endpoint):
 
     def get(self, deposito, ubicacion, producto, cantidad):
         try:
-            self._validar_cantidad(cantidad)
-            area, pasillo, fila, cara = self._parse_ubicacion(ubicacion)
+            self.validar_cantidad(cantidad)
+            area, pasillo, fila, cara = self.parse_ubicacion(ubicacion)
+            self.validar_deposito(deposito)
 
         except Exception as e:
-            return {"mensaje": str(e), "data": {}}, 406
+            return self.build_response(str(e), {}, 406)
 
         try:
             cantidad_disponible = self._get_cantidad_de_producto(
                 producto, deposito, area, pasillo, fila, cara
             )
 
-        except Exception as e:
-            return {"mensaje": str(e), "data": {}}, 500
+            if cantidad_disponible == -1:
+                return self.build_response("Producto no encontrado", {}, 404)
 
-        if cantidad_disponible == -1:
-            return {"mensaje": "Producto no encontrado", "data": {}}, 404
-
-        if cantidad_disponible - cantidad >= 0:
-            try:
+            if cantidad_disponible - cantidad >= 0:
                 message, data, code = self._retirar_cantidad_de_producto(
                     producto, deposito, area, pasillo, fila, cara, cantidad
                 )
 
-                return {"mensaje": message, "data": data}, code
+                return self.build_response(message, data, code)
 
-            except Exception as e:
-                return {"mensaje": str(e), "data": {}}, 406
+            else:
+                return self.build_response("No hay stock suficiente", {}, 406)
 
-        else:
-            return {"mensaje": "No hay stock suficiente", "data": {}}, 406
+        except Exception as e:
+            return self.build_response(str(e), {}, 500)
 
     def _retirar_cantidad_de_producto(
         self, producto, deposito, area, pasillo, fila, cara, cantidad
@@ -68,13 +65,9 @@ class Retirar(Resource, Endpoint):
                 AND PASILLO={int(pasillo)} AND FILA={int(fila)} AND CARA="{str(cara)}"',
         )
 
-        result = self._bundle(data, description)
+        result = self.bundle(data, description)
 
         if result != []:
             return result[0]["CANTIDAD"]
 
         return -1
-
-    def _validar_cantidad(self, cantidad):
-        if cantidad < 0:
-            raise Exception("No se admiten cantidades negativas")

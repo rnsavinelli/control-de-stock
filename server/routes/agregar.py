@@ -11,6 +11,10 @@ from server.endpoint import Endpoint
 #   c. Que el producto/item sea almacenado en nuestros depósitos.
 #   d. No se pueden colocar más de 3 productos distintos en una ubicación.
 class Agregar(Resource, Endpoint):
+    MAX_PRODUCTOS_POR_UBICACION = 3
+    MAX_CANTIDAD_PRODUCTOS_POR_UBICACION = 100
+    ALMACENAMIENTO_LOCAL = "fullfilment"
+
     def __init__(self, **kwargs):
         Endpoint.__init__(self, database_file=kwargs["database_file"])
 
@@ -23,80 +27,104 @@ class Agregar(Resource, Endpoint):
         parser.add_argument("producto", required=True)
         parser.add_argument("cantidad", required=True)
 
-        # Parse the arguments into an object
         args = parser.parse_args()
 
-        code, message, data = self._add_producto(
+        # Validar que la dirección tenga el patrón correcto.
+        try:
+            self.validar_cantidad(args["cantidad"])
+            area, pasillo, fila, cara = self.parse_ubicacion(args["ubicacion"])
+            self.validar_deposito(args["deposito"])
+
+        except Exception as e:
+            return self.build_response(str(e), {}, 406)
+
+        message, data, code = self._add_producto(
             args["deposito"],
-            args["ubicacion"],
+            area,
+            pasillo,
+            fila,
+            cara,
             args["producto"],
             args["cantidad"],
         )
 
-        return {"mensaje": message, "data": data}, code
+        return self.build_response(message, data, code)
 
-    def _add_producto(self, deposito, ubicacion, producto, cantidad):
-        # BO Validar que la dirección tenga el patrón correcto.
+    def _add_producto(self, deposito, area, pasillo, fila, cara, producto, cantidad):
         try:
-            area, pasillo, fila, cara = self.locator.parse(ubicacion)
+            result = self._obtener_producto_por_id(producto)
 
-        except Exception as e:
-            return 406, str(e), {}
-        # EO Validar que la dirección tenga el patrón correcto.
+            if len(result) == 0:
+                return "Producto no encontrado", {}, 404
 
-        # BO Validar que el producto/item sea almacenado en nuestros depósitos.
-        try:
-            data, description, _ = self.database.select(
-                "*", "PRODUCTO", f"ID={int(producto)}"
+            if not self._almacenado_en_deposito(result[0]["ALMACENAMIENTO"]):
+                return "El producto no se encuentra en nuestros depositos", {}, 406
+
+            productos = self._obetener_productos_por_ubicacion(
+                deposito, area, pasillo, fila, cara
             )
 
-            n_entries = len(self._bundle(data, description))
+            # No colocar más de 3 productos distintos en una ubicación.
+            if not (
+                (int(producto) in [x["ID_PRODUCTO"] for x in productos])
+                or (len(productos) < self.MAX_PRODUCTOS_POR_UBICACION)
+            ):
+                return "No pueden almacenarse mas productos en esta ubicacion", {}, 406
 
-            if n_entries == 0:
-                return 404, "Producto no encontrado", {}
+            # La suma de las cantidades de los productos que hubiera en una ubicación
+            # no puede ser mayor a 100 unidades.
+            cantidad_almacenada = sum(p["CANTIDAD"] for p in productos)
 
-            table_producto = self._bundle(data, description)
+            if (
+                cantidad_almacenada + int(cantidad)
+                > self.MAX_CANTIDAD_PRODUCTOS_POR_UBICACION
+            ):
+                return (
+                    "Solo queda espacio para "
+                    + f"{self.MAX_CANTIDAD_PRODUCTOS_POR_UBICACION - cantidad_almacenada} "
+                    + "productos en esta ubicacion",
+                    {},
+                    406,
+                )
 
-            if table_producto[0]["ALMACENAMIENTO"] != "fullfilment":
-                return 406, "El producto no se encuentra en nuestros depósitos", {}
-
-        except Exception as e:
-            return 500, str(e), {}
-        # EO Validar que el producto/item sea almacenado en nuestros depósitos.
-
-        # BO No colocar más de 3 productos distintos en una ubicación.
-        try:
-            data, description, _ = self.database.select(
-                "*",
-                "PRODUCTO_POR_DEPOSITO",
-                f'ID_DEPOSITO="{str(deposito)}" AND AREA="{str(area)}" AND PASILLO={int(pasillo)} \
-                    AND FILA={int(fila)} AND CARA="{str(cara)}"',
+            self._actualizar_base_de_datos(
+                deposito, area, pasillo, fila, cara, producto, cantidad
             )
 
-            entries = self._bundle(data, description)
-            n_entries = len(entries)
+            return "La base de datos fue actualizada", {}, 200
 
         except Exception as e:
-            return 500, str(e), {}
+            return str(e), {}, 500
 
-        if not (
-            (int(producto) in [x["ID_PRODUCTO"] for x in entries]) or (n_entries < 3)
-        ):
-            return 406, "No pueden almacenarse más productos en esta ubicación", {}
-        # EO No colocar más de 3 productos distintos en una ubicación.
+    def _obtener_producto_por_id(self, id):
+        data, description, _ = self.database.select("*", "PRODUCTO", f"ID={int(id)}")
 
-        # BO La suma de las cantidades de los productos que hubiera en una ubicación no puede ser mayor a 100 unidades.
-        cantidad_almacenada = sum(entry["CANTIDAD"] for entry in entries)
+        return self.bundle(data, description)
 
-        if cantidad_almacenada + int(cantidad) > 100:
-            return (
-                406,
-                f"Solo queda espacio para {100 - cantidad_almacenada} productos en esta ubicación",
-                {},
-            )
-        # EO La suma de las cantidades de los productos que hubiera en una ubicación no puede ser mayor a 100 unidades.
+    def _obetener_productos_por_ubicacion(self, deposito, area, pasillo, fila, cara):
+        data, description, _ = self.database.select(
+            "*",
+            "PRODUCTO_POR_DEPOSITO",
+            f'ID_DEPOSITO="{str(deposito)}" AND AREA="{str(area)}" \
+                    AND PASILLO={int(pasillo)} AND FILA={int(fila)} \
+                    AND CARA="{str(cara)}"',
+        )
 
-        try:
+        return self.bundle(data, description)
+
+    def _actualizar_base_de_datos(
+        self, deposito, area, pasillo, fila, cara, producto, cantidad
+    ):
+        _, _, rowcount = self.database.update(
+            "PRODUCTO_POR_DEPOSITO",
+            f"CANTIDAD=CANTIDAD + {int(cantidad)}",
+            f'ID_PRODUCTO={int(producto)} AND ID_DEPOSITO="{str(deposito)}"\
+                AND AREA="{str(area)}" AND PASILLO={int(pasillo)} \
+                AND FILA={int(fila)} AND CARA="{str(cara)}"',
+        )
+
+        #
+        if rowcount == 0:
             args = {
                 "ID_PRODUCTO": producto,
                 "ID_DEPOSITO": deposito,
@@ -106,18 +134,7 @@ class Agregar(Resource, Endpoint):
                 "CARA": cara,
                 "CANTIDAD": cantidad,
             }
+            self.database.write_table("PRODUCTO_POR_DEPOSITO", args)
 
-            _, _, rowcount = self.database.update(
-                "PRODUCTO_POR_DEPOSITO",
-                f"CANTIDAD=CANTIDAD + {int(cantidad)}",
-                f'ID_PRODUCTO={int(producto)} AND ID_DEPOSITO="{str(deposito)}" AND AREA="{str(area)}" \
-                    AND PASILLO={int(pasillo)} AND FILA={int(fila)} AND CARA="{str(cara)}"',
-            )
-
-            if rowcount == 0:
-                self.database.write_table("PRODUCTO_POR_DEPOSITO", args)
-
-            return 200, "La base de datos fue actualizada", {}
-
-        except Exception as e:
-            return 500, str(e), {}
+    def _almacenado_en_deposito(self, tipo_almacenamiento):
+        return tipo_almacenamiento == "fullfilment"
