@@ -48,7 +48,7 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 
 ## 2- Retirar cierta cantidad de un producto dado un id de producto, un depósito, una cantidad y una ubicación
 
-`GET /retirar/<string:deposito>/<string:ubicacion>/<int:producto>/<int:cantidad>`
+`PUT /retirar`
 
 **Respuesta**
 
@@ -62,7 +62,7 @@ con 2 dígitos para cada parte, e.g. AL-04-02-DE.
 
 **Ejemplo 200**
 
-`curl localhost:5000/retirar/AR01/AL-04-02-DE/4/1`
+`curl -X PUT -F 'producto=4' -F 'deposito=AR01' -F 'ubicacion=AL-04-02-DE' -F 'cantidad=1' localhost:5000/retirar`
 
 ```json
 {

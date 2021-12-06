@@ -43,7 +43,7 @@ api.add_resource(
 # e.g. curl localhost:5000/retirar/AR01/AL-04-02-DE/2/7
 api.add_resource(
     Retirar,
-    "/retirar/<string:deposito>/<string:ubicacion>/<int:producto>/<int:cantidad>",
+    "/retirar",
     resource_class_kwargs={"database_file": configuration.database()},
 )
 

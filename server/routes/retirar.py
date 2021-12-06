@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 from server.endpoint import Endpoint
 
@@ -11,26 +11,42 @@ class Retirar(Resource, Endpoint):
     def __init__(self, **kwargs):
         Endpoint.__init__(self, database_file=kwargs["database_file"])
 
-    def get(self, deposito, ubicacion, producto, cantidad):
+    def put(self):
+
+        parser = reqparse.RequestParser()
+
+        parser.add_argument("deposito", required=True)
+        parser.add_argument("ubicacion", required=True)
+        parser.add_argument("producto", required=True)
+        parser.add_argument("cantidad", required=True)
+
+        args = parser.parse_args()
+
         try:
-            self.validar_cantidad(cantidad)
-            area, pasillo, fila, cara = self.parse_ubicacion(ubicacion)
-            self.validar_deposito(deposito)
+            self.validar_cantidad(args["cantidad"])
+            area, pasillo, fila, cara = self.parse_ubicacion(args["ubicacion"])
+            self.validar_deposito(args["deposito"])
 
         except Exception as e:
             return self.build_response(str(e), {}, 406)
 
         try:
             cantidad_disponible = self._get_cantidad_de_producto(
-                producto, deposito, area, pasillo, fila, cara
+                args["producto"], args["deposito"], area, pasillo, fila, cara
             )
 
             if cantidad_disponible == -1:
                 return self.build_response("Producto no encontrado", {}, 404)
 
-            if cantidad_disponible - cantidad >= 0:
+            if cantidad_disponible - int(args["cantidad"]) >= 0:
                 message, data, code = self._retirar_cantidad_de_producto(
-                    producto, deposito, area, pasillo, fila, cara, cantidad
+                    args["producto"],
+                    args["deposito"],
+                    area,
+                    pasillo,
+                    fila,
+                    cara,
+                    args["cantidad"],
                 )
 
                 return self.build_response(message, data, code)
@@ -68,6 +84,6 @@ class Retirar(Resource, Endpoint):
         result = self.bundle(data, description)
 
         if result != []:
-            return result[0]["CANTIDAD"]
+            return int(result[0]["CANTIDAD"])
 
         return -1
